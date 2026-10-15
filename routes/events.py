@@ -1,3 +1,5 @@
+import datetime
+
 from flask import Blueprint, jsonify, request
 
 from models import db, Event
@@ -29,10 +31,18 @@ def create_event(user):
     data = request.get_json(silent=True) or {}
     title = (data.get("title") or "").strip()
     event_date = data.get("event_date")
+
     if not title or len(title) > 100:
         return jsonify({"message": "Название обязательно, до 100 символов"}), 400
     if not event_date:
         return jsonify({"message": "Укажите дату и время"}), 400
+
+    # Преобразуем строку в datetime (нужно для SQLite в тестах)
+    if isinstance(event_date, str):
+        try:
+            event_date = datetime.datetime.fromisoformat(event_date)
+        except ValueError:
+            return jsonify({"message": "Неверный формат даты"}), 400
 
     event = Event(
         title=title,
