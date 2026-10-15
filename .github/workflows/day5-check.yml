@@ -22,4 +22,4 @@ jobs:
           test -f docs/assessment.md
       - name: Run tests
         run: python -m pytest -v
-      - run: echo "PASS: Day 5 checks completed"
+      - run: "echo 'PASS: Day 5 checks completed'"
