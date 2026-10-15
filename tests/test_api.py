@@ -1,3 +1,6 @@
+import datetime
+
+
 def _register_and_login(client, email, role):
     client.post("/api/register", json={
         "username": email.split("@")[0], "email": email,
@@ -47,7 +50,7 @@ def test_create_event_with_token(client):
     headers = {"Authorization": "Bearer " + token}
     resp = client.post("/api/events", json={
         "title": "Тихий кинопросмотр",
-        "event_date": "2026-11-03 19:00:00",
+        "event_date": datetime.datetime(2026, 11, 3, 19, 0, 0).isoformat(),
         "is_inclusive": True}, headers=headers)
     assert resp.status_code == 201
     assert "id" in resp.get_json()
@@ -56,7 +59,8 @@ def test_create_event_with_token(client):
 def test_register_for_event(client):
     org_token = _register_and_login(client, "org4@mail.ru", role="organizer")
     client.post("/api/events", json={
-        "title": "Экскурсия", "event_date": "2026-11-03 12:00:00"},
+        "title": "Экскурсия",
+        "event_date": datetime.datetime(2026, 11, 3, 12, 0, 0).isoformat()},
         headers={"Authorization": "Bearer " + org_token})
     events = client.get("/api/events").get_json()
     event_id = events[0]["id"]
