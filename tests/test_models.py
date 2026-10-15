@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 
 from app import db
@@ -26,7 +28,8 @@ def test_event_requires_title(client):
     db.session.add(User(username="org", email="org@mail.ru", password_hash="x"))
     db.session.commit()
     org = User.query.filter_by(email="org@mail.ru").first()
-    ev = Event(organizer_id=org.id, event_date="2026-11-01 12:00:00")
+    ev = Event(organizer_id=org.id,
+               event_date=datetime.datetime(2026, 11, 1, 12, 0, 0))
     db.session.add(ev)
     with pytest.raises(Exception):
         db.session.commit()
@@ -40,7 +43,8 @@ def test_registration_unique_per_user_event(client):
     org = User.query.filter_by(email="o@mail.ru").first()
     part = User.query.filter_by(email="p@mail.ru").first()
     ev = Event(title="Кинопросмотр", organizer_id=org.id,
-               event_date="2026-11-01 12:00:00", is_inclusive=True)
+               event_date=datetime.datetime(2026, 11, 1, 12, 0, 0),
+               is_inclusive=True)
     db.session.add(ev)
     db.session.commit()
     db.session.add(Registration(user_id=part.id, event_id=ev.id, status="pending"))
@@ -56,7 +60,7 @@ def test_event_organizer_relationship(client):
     db.session.add(org)
     db.session.commit()
     ev = Event(title="Экскурсия", organizer_id=org.id,
-               event_date="2026-11-02 18:00:00")
+               event_date=datetime.datetime(2026, 11, 2, 18, 0, 0))
     db.session.add(ev)
     db.session.commit()
     found = Event.query.filter_by(title="Экскурсия").first()
