@@ -32,4 +32,4 @@ jobs:
         run: |
           grep -l "aria-label" templates/*.html && echo "PASS: aria-label found" || echo "FAIL: no aria-label"
           grep -l "role=" templates/*.html && echo "PASS: role attribute found" || echo "FAIL: no role attribute"
-      - run: echo "PASS: Day4 Frontend Check completed"
+      - run: "echo 'PASS: Day4 Frontend Check completed'"
